@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Deta",
+    products: [.library(name: "Deta", targets: ["Deta"])],
     dependencies: [],
     targets: [
         .target(name: "Deta", dependencies: []),
