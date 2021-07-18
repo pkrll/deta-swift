@@ -6,9 +6,11 @@ import PackageDescription
 let package = Package(
     name: "Deta",
     products: [.library(name: "Deta", targets: ["Deta"])],
-    dependencies: [],
+    dependencies: [
+        .package(url: "git@github.com:pkrll/Network.git", .branch("main"))
+    ],
     targets: [
-        .target(name: "Deta", dependencies: []),
+        .target(name: "Deta", dependencies: ["Network"]),
         .testTarget(name: "DetaTests", dependencies: ["Deta"]),
     ]
 )
