@@ -4,6 +4,9 @@
 
 import Foundation
 
-public enum DetaError: Error {
-    case noData
+public struct DetaError: Error, Decodable {
+    
+    static let missingData: Self = Self(errors: ["Missing data"])
+    
+    public let errors: [String]
 }

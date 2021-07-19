@@ -56,19 +56,23 @@ public final class Deta {
     ///                         be assigned to the item returned.
     /// - Parameter completion: Called upon completion. If successful, the completion handler will return the newly
     ///                         created item. Otherwise, an error is returned.
-    public func put<T: ItemModel>(_ value: T, completion: @escaping (Result<T, Error>) -> Void) {
-        fatalError("Not implemented.")
-    }
-    /// Stores up to 25 items in the Base.
-    ///
-    /// - Note: This method can also be used to update an item in the database, if the model contains a valid key.
-    ///
-    /// - Parameter values:     The list of model you want to add to the database.
-    /// - Parameter completion: Called upon completion. If successful, the completion handler will return the newly
-    ///                         created items. Otherwise, an error is returned.
-    public func put<T: ItemModel>(many values: [T], completion: @escaping (Result<[T], Error>) -> Void) {
-        guard values.count <= 25 else {
-            fatalError("This should throw an error.")
+    public func put<T: ItemModel>(items: [T], _ completion: @escaping (Result<Put.Response<T>, Error>) -> Void) {
+        var request = Request.put("items")
+        request.body = JSONBody(Put.Request(items: items))
+        
+        standardOperation.send(request) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let response) where response.status.rawValue == Network.Status.badRequest.rawValue:
+                let error = self.parseError(from: response)
+                completion(.failure(error))
+            case .success(let response):
+                let result = self.parse(response: response, as: Put.Response<T>.self)
+                completion(result)
+            }
         }
     }
     
