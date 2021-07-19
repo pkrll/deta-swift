@@ -66,7 +66,7 @@ public final class Deta {
             switch result {
             case .failure(let error):
                 completion(.failure(error))
-            case .success(let response) where response.status.rawValue == Network.Status.badRequest.rawValue:
+            case .success(let response) where response.status == .badRequest:
                 let error = self.parseError(from: response)
                 completion(.failure(error))
             case .success(let response):
