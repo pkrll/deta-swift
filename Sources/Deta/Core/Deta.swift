@@ -7,7 +7,7 @@ public final class Deta {
     private let base: String
     private let environment: Environment
     private let builder: OperationBuilder
-
+    
     private var standardOperation: Operator {
         let operation = builder
             .append(.session(.shared))
@@ -34,8 +34,32 @@ public final class Deta {
     ///
     /// - Parameter key:        The key of which item to be retrieved.
     /// - Parameter completion: If the item does not exists, the completion handler will return an error.
-    public func get<T: ItemModel>(key: String, completion: @escaping (Result<T, Error>) -> Void) {
-        fatalError("Not implemented.")
+    public func get<T: ItemModel>(key: String, for item: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+        let request = Request.get("items/\(key)")
+        
+        standardOperation.send(request) { [weak self] result in
+            guard let self = self else { return }
+            let returnValue: Result<T, Error>
+            
+            do {
+                switch result {
+                case .failure(let error):
+                    returnValue = .failure(error)
+                case .success(let response) where response.status == .notFound:
+                    let result = try self.parse(response, as: PartialItem.self)
+                    returnValue = .failure(result)
+                case .success(let response):
+                    let result = try self.parse(response, as: T.self)
+                    returnValue = .success(result)
+                }
+                
+                
+            } catch {
+                returnValue = .failure(error)
+            }
+            
+            completion(returnValue)
+        }
     }
     /// Inserts a single item into a Base. Unlike ``put``, this method will return an error if
     /// an item with the same key already exists.
@@ -62,17 +86,24 @@ public final class Deta {
         
         standardOperation.send(request) { [weak self] result in
             guard let self = self else { return }
+            let returnValue: Result<Put.Response<T>, Error>
             
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let response) where response.status == .badRequest:
-                let error = self.parseError(from: response)
-                completion(.failure(error))
-            case .success(let response):
-                let result = self.parse(response: response, as: Put.Response<T>.self)
-                completion(result)
+            do {
+                switch result {
+                case .failure(let error):
+                    returnValue = .failure(error)
+                case .success(let response) where response.status == .badRequest:
+                    let result = self.parseError(from: response)
+                    returnValue = .failure(result)
+                case .success(let response):
+                    let result = try self.parse(response, as: Put.Response<T>.self)
+                    returnValue = .success(result)
+                }
+            } catch {
+                returnValue = .failure(error)
             }
+            
+            completion(returnValue)
         }
     }
     
@@ -88,17 +119,27 @@ public final class Deta {
         if let query = query {
             request.body = JSONBody(query)
         }
-
+        
         standardOperation.send(request) { [weak self] result in
             guard let self = self else { return }
-
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let response):
-                let result = self.parse(response: response, as: Fetch.Response<T>.self)
-                completion(result)
+            let returnValue: Result<Fetch.Response<T>, Error>
+            
+            do {
+                switch result {
+                case .failure(let error):
+                    returnValue = .failure(error)
+                case .success(let response) where response.status == .badRequest:
+                    let result = self.parseError(from: response)
+                    returnValue = .failure(result)
+                case .success(let response):
+                    let result = try self.parse(response, as: Fetch.Response<T>.self)
+                    returnValue = .success(result)
+                }
+            } catch {
+                returnValue = .failure(error)
             }
+            
+            completion(returnValue)
         }
     }
 }

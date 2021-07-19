@@ -19,21 +19,16 @@ extension Deta {
         }
     }
     
-    func parse<T: Decodable>(response: Response, as type: T.Type) -> Result<T, Error> {
+    func parse<T: Decodable>(_ response: Response, as type: T.Type) throws -> T {
         guard let data = response.data else {
-            return .failure(DetaError.missingData)
+            throw DetaError.missingData
         }
-        
-        let decoder = JSONDecoder()
-        let result: Result<T, Error>
-        
+
         do {
-            let response = try decoder.decode(T.self, from: data)
-            result = .success(response)
+            let decoder = JSONDecoder()
+            return try decoder.decode(T.self, from: data)
         } catch {
-            result = .failure(error)
+            throw error
         }
-        
-        return result
     }
 }
