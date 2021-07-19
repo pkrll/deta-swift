@@ -76,35 +76,25 @@ public final class Deta {
         fatalError("Not implemented.")
     }
     
-    public func fetch<T: ItemModel>(model: T.Type, _ completion: @escaping (Result<FetchResponse<T>, Error>) -> Void) {
-        standardOperation.send(.post("query")) { [weak self] result in
+    public func fetch<T: ItemModel>(model: T.Type,
+                                    query: Fetch.Request? = nil,
+                                    _ completion: @escaping (Result<Fetch.Response<T>, Error>) -> Void) {
+        var request = Request.post("query")
+        
+        if let query = query {
+            request.body = JSONBody(query)
+        }
+
+        standardOperation.send(request) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let response):
-                let result = self.parse(response: response, as: FetchResponse<T>.self)
+                let result = self.parse(response: response, as: Fetch.Response<T>.self)
                 completion(result)
             }
         }
-    }
-    
-    private func parse<T: Decodable>(response: Response, as type: T.Type) -> Result<T, Error> {
-        guard let data = response.data else {
-            return .failure(DetaError.noData)
-        }
-        
-        let decoder = JSONDecoder()
-        let result: Result<T, Error>
-        
-        do {
-            let response = try decoder.decode(T.self, from: data)
-            result = .success(response)
-        } catch {
-            result = .failure(error)
-        }
-        
-        return result
     }
 }
