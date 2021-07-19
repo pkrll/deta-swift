@@ -7,11 +7,12 @@ import Network
 
 extension Environment {
     init(projectKey: String, base: String) {
-        let baseUrl = "https://database.deta.sh/v1"
+        let host = "database.deta.sh"
         let projectId = projectKey.split(separator: "_")[0]
-        let pathPrefix = "/\(projectId)/\(base)/"
+        let pathPrefix = "/v1/\(projectId)/\(base)/"
+        let headers = ["X-API-KEY": projectKey]
         
-        self.init(host: baseUrl, pathPrefix: pathPrefix)
+        self.init(host: host, pathPrefix: pathPrefix, headers: headers)
     }
 }
 
