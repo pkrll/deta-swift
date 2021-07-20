@@ -52,8 +52,6 @@ public final class Deta {
                     let result = try self.parse(response, as: T.self)
                     returnValue = .success(result)
                 }
-                
-                
             } catch {
                 returnValue = .failure(error)
             }
@@ -70,7 +68,31 @@ public final class Deta {
     /// - Parameter completion: Called upon completion. If successful, the completion handler will return the newly
     ///                         created item. Otherwise, an error is returned.
     public func insert<T: ItemModel>(_ value: T, completion: @escaping (Result<T, Error>) -> Void) {
-        fatalError("Not implemented.")
+        var request = Request.post("items")
+        request.body = JSONBody(Insert.Request(item: value))
+        
+        standardOperation.send(request) { [weak self] result in
+            guard let self = self else { return }
+            let returnValue: Result<T, Error>
+            
+            do {
+                switch result {
+                case .failure(let error):
+                    returnValue = .failure(error)
+                case .success(let response) where response.status == .conflict,
+                     .success(let response) where response.status == .badRequest:
+                    let result = self.parseError(from: response)
+                    returnValue = .failure(result)
+                case .success(let response):
+                    let result = try self.parse(response, as: T.self)
+                    returnValue = .success(result)
+                }
+            } catch {
+                returnValue = .failure(error)
+            }
+            
+            completion(returnValue)
+        }
     }
     /// Store an item in the Base.
     /// - Note: This method can also be used to update an item in the database, if the model contains a valid key.

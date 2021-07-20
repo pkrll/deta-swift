@@ -1,8 +1,5 @@
 //
-//  File.swift
-//  
-//
-//  Created by Ardalan Samimi on 2021-07-19.
+// Deta
 //
 
 import Foundation
