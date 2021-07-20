@@ -27,8 +27,56 @@ public final class Deta {
     /// Deletes an item from the database that matches the key provided.
     ///
     /// - Parameter key: The key of which item to be deleted.
-    public func delete(key: String, completion: @escaping () -> Void) {
-        fatalError("Not implemented.")
+    public func delete(key: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let request = Request.delete("items/\(key)")
+        
+        standardOperation.send(request) { result in
+            let response: Result<Void, Error>
+            
+            switch result {
+            case .failure(let error):
+                response = .failure(error)
+            case .success:
+                response = .success(())
+            }
+            
+            completion(response)
+        }
+    }
+    /// List items that match a query.
+    ///
+    /// - Parameter model: The type of the expected model to fetch.
+    /// - Parameter query: A query.
+    public func fetch<T: ItemModel>(model: T.Type,
+                                    query: Fetch.Request? = nil,
+                                    _ completion: @escaping (Result<Fetch.Response<T>, Error>) -> Void) {
+        var request = Request.post("query")
+        
+        if let query = query {
+            request.body = JSONBody(query)
+        }
+        
+        standardOperation.send(request) { [weak self] result in
+            guard let self = self else { return }
+            let returnValue: Result<Fetch.Response<T>, Error>
+            
+            do {
+                switch result {
+                case .failure(let error):
+                    returnValue = .failure(error)
+                case .success(let response) where response.status == .badRequest:
+                    let result = self.parseError(from: response)
+                    returnValue = .failure(result)
+                case .success(let response):
+                    let result = try self.parse(response, as: Fetch.Response<T>.self)
+                    returnValue = .success(result)
+                }
+            } catch {
+                returnValue = .failure(error)
+            }
+            
+            completion(returnValue)
+        }
     }
     /// Retrieves an item from the database that matches the key provided.
     ///
@@ -149,38 +197,6 @@ public final class Deta {
                     returnValue = .failure(result)
                 case .success(let response):
                     let result = try self.parse(response, as: Update.Response.self)
-                    returnValue = .success(result)
-                }
-            } catch {
-                returnValue = .failure(error)
-            }
-            
-            completion(returnValue)
-        }
-    }
-    
-    public func fetch<T: ItemModel>(model: T.Type,
-                                    query: Fetch.Request? = nil,
-                                    _ completion: @escaping (Result<Fetch.Response<T>, Error>) -> Void) {
-        var request = Request.post("query")
-        
-        if let query = query {
-            request.body = JSONBody(query)
-        }
-        
-        standardOperation.send(request) { [weak self] result in
-            guard let self = self else { return }
-            let returnValue: Result<Fetch.Response<T>, Error>
-            
-            do {
-                switch result {
-                case .failure(let error):
-                    returnValue = .failure(error)
-                case .success(let response) where response.status == .badRequest:
-                    let result = self.parseError(from: response)
-                    returnValue = .failure(result)
-                case .success(let response):
-                    let result = try self.parse(response, as: Fetch.Response<T>.self)
                     returnValue = .success(result)
                 }
             } catch {
