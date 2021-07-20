@@ -129,8 +129,34 @@ public final class Deta {
         }
     }
     
-    public func update() {
-        fatalError("Not implemented.")
+    public func update(key: String,
+                       payload: Update.Request,
+                       _ completion: @escaping (Result<Update.Response, Error>) -> Void) {
+        var request = Request.patch("items/\(key)")
+        request.body = JSONBody(payload)
+        
+        standardOperation.send(request) { [weak self] result in
+            guard let self = self else { return }
+            let returnValue: Result<Update.Response, Error>
+            
+            do {
+                switch result {
+                case .failure(let error):
+                    returnValue = .failure(error)
+                case .success(let response) where response.status == .badRequest,
+                     .success(let response) where response.status == .notFound:
+                    let result = self.parseError(from: response)
+                    returnValue = .failure(result)
+                case .success(let response):
+                    let result = try self.parse(response, as: Update.Response.self)
+                    returnValue = .success(result)
+                }
+            } catch {
+                returnValue = .failure(error)
+            }
+            
+            completion(returnValue)
+        }
     }
     
     public func fetch<T: ItemModel>(model: T.Type,
