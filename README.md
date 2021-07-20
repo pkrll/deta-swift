@@ -169,8 +169,8 @@ deta.fetch(model: SomeModel.self, query: request) { result in
     switch result {
     case .failure(let error):
         print(error)
-    case .success(let comics):
-        print(comics)
+    case .success(let response):
+        // List of item fetched, as SomeModel
     }
 }
 ```
