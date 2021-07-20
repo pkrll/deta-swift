@@ -35,11 +35,11 @@ let items = [
 
 deta.put(items: items) { result
     switch result {
-        case .failure(let error):
-            print(error)
-        case .success(let response):
-            // response.processed contains all items that were successfully added.
-            // response.failed contains any item that failed due to internal processing.
+    case .failure(let error):
+        print(error)
+    case .success(let response):
+        // response.processed contains all items that were successfully added.
+        // response.failed contains any item that failed due to internal processing.
     }
 }
 ```
@@ -60,10 +60,10 @@ struct SomeModel: ItemModel {
 
 deta.get(key: "1", for: SomeModel.self) { result
     switch result {
-        case .failure(let error):
-            print(error)
-        case .success(let response):
-            // The response, as a SomeModel
+    case .failure(let error):
+        print(error)
+    case .success(let response):
+        // The response, as a SomeModel
     }
 }
 ```
@@ -77,10 +77,10 @@ The ``delete`` method deletes an item from the Deta base. Regardless of whether 
 ```swift
 deta.delete(key: "1") { result
     switch result {
-        case .failure(let error):
-            print(error)
-        case .success:
-            // The item was or was not deleted 🤷🏻‍♂️
+    case .failure(let error):
+        print(error)
+    case .success:
+        // The item was or was not deleted 🤷🏻‍♂️
     }
 }
 ```
@@ -101,10 +101,10 @@ let item = SomeModel(key: "1", title: "First item")
 
 deta.insert(item) { result
     switch result {
-        case .failure(let error):
-            print(error)
-        case .success(let response):
-            // The item inserted, as SomeModel
+    case .failure(let error):
+        print(error)
+    case .success(let response):
+        // The item inserted, as SomeModel
     }
 }
 ```
