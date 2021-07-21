@@ -1,3 +1,4 @@
+![Swift 5.4](https://img.shields.io/badge/Swift-5.4-orange) ![SPM Compatible](https://img.shields.io/badge/SPM-Compatible-success)
 # Deta SDK for Swift
 
 Deta-Swift is the unofficial Deta SDK for Swift.
@@ -17,6 +18,10 @@ let deta = Deta(projectKey: "YourProjectKey", base: "SampleDB")
 ```
 
 The Deta SDK for Swift supports all of Deta's HTTP API endpoints currently available.
+
+#### :warning: Warning :warning:
+
+**Remember that your project key is a secret. Anyone with the key can access and modify your database. This SDK is not meant to be used client side, as it requires the API key to be sent over HTTPs and therefore visible for everyone. Do not commit this key to a public repository.**
 
 ### Put Item
 
@@ -68,7 +73,7 @@ deta.get(key: "1", for: SomeModel.self) { result
 }
 ```
 
-For more information, please see the documentation for [Put Item](https://docs.deta.sh/docs/base/http/#get-item) on Deta Docs.
+For more information, please see the documentation for [Get Item](https://docs.deta.sh/docs/base/http/#get-item) on Deta Docs.
 
 ### Delete Item
 
@@ -85,7 +90,7 @@ deta.delete(key: "1") { result
 }
 ```
 
-For more information, please see the documentation for [Put Item](https://docs.deta.sh/docs/base/http/#delete-item) on Deta Docs.
+For more information, please see the documentation for [Delete Item](https://docs.deta.sh/docs/base/http/#delete-item) on Deta Docs.
 
 ### Insert Item
 
@@ -109,7 +114,7 @@ deta.insert(item) { result
 }
 ```
 
-For more information, please see the documentation for [Put Item](https://docs.deta.sh/docs/base/http/#insert-item) on Deta Docs.
+For more information, please see the documentation for [Insert Item](https://docs.deta.sh/docs/base/http/#insert-item) on Deta Docs.
 
 ### Update Item
 
@@ -146,7 +151,7 @@ Update.Request(
 )
 ```
 
-For more information, please see the documentation for [Put Item](https://docs.deta.sh/docs/base/http/#update-item) on Deta Docs.
+For more information, please see the documentation for [Update Item](https://docs.deta.sh/docs/base/http/#update-item) on Deta Docs.
 
 ### Fetch Item
 
@@ -175,4 +180,4 @@ deta.fetch(model: SomeModel.self, query: request) { result in
 }
 ```
 
-For more information, please see the documentation for [Put Item](https://docs.deta.sh/docs/base/http/#query-item) on Deta Docs.
+For more information, please see the documentation for [Query Item](https://docs.deta.sh/docs/base/http/#query-item) on Deta Docs.
