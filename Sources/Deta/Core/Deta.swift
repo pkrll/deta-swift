@@ -47,7 +47,7 @@ public final class Deta {
     ///
     /// - Parameter model: The type of the expected model to fetch.
     /// - Parameter query: A query.
-    public func fetch<T: ItemModel>(model: T.Type,
+    public func fetch<T: Fetchable>(model: T.Type,
                                     query: Fetch.Request? = nil,
                                     _ completion: @escaping (Result<Fetch.Response<T>, Error>) -> Void) {
         var request = Request.post("query")
@@ -82,7 +82,7 @@ public final class Deta {
     ///
     /// - Parameter key:        The key of which item to be retrieved.
     /// - Parameter completion: If the item does not exists, the completion handler will return an error.
-    public func get<T: ItemModel>(key: String, for item: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    public func get<T: Fetchable>(key: String, for item: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
         let request = Request.get("items/\(key)")
         
         standardOperation.send(request) { [weak self] result in
@@ -115,7 +115,7 @@ public final class Deta {
     ///                         be assigned to the item returned.
     /// - Parameter completion: Called upon completion. If successful, the completion handler will return the newly
     ///                         created item. Otherwise, an error is returned.
-    public func insert<T: ItemModel>(_ value: T, completion: @escaping (Result<T, Error>) -> Void) {
+    public func insert<T: Fetchable>(_ value: T, completion: @escaping (Result<T, Error>) -> Void) {
         var request = Request.post("items")
         request.body = JSONBody(Insert.Request(item: value))
         
@@ -150,7 +150,7 @@ public final class Deta {
     ///                         be assigned to the item returned.
     /// - Parameter completion: Called upon completion. If successful, the completion handler will return the newly
     ///                         created item. Otherwise, an error is returned.
-    public func put<T: ItemModel>(items: [T], _ completion: @escaping (Result<Put.Response<T>, Error>) -> Void) {
+    public func put<T: Fetchable>(items: [T], _ completion: @escaping (Result<Put.Response<T>, Error>) -> Void) {
         var request = Request.put("items")
         request.body = JSONBody(Put.Request(items: items))
         

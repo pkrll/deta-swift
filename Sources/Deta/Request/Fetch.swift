@@ -19,7 +19,7 @@ public struct Fetch {
         }
     }
     
-    public struct Response<Item: ItemModel>: Decodable {
+    public struct Response<Item: Fetchable>: Decodable {
         public struct Paging: Decodable {
             /// Number of items returned
             public let size: Int
