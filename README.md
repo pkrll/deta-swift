@@ -20,10 +20,10 @@ The Deta SDK for Swift supports all of Deta's HTTP API endpoints currently avail
 
 ### Put Item
 
-The ``put`` method allows for adding multiple items to the Deta base in a single request. Your models must conform to the ``ItemModel`` protocol.
+The ``put`` method allows for adding multiple items to the Deta base in a single request. Your models must conform to the ``Fetchable`` protocol.
 
 ```swift
-struct SomeModel: ItemModel {
+struct SomeModel: Fetchable {
     let key: String?
     let title: String
 }
@@ -53,7 +53,7 @@ The ``get`` method retrieves a single item from the Deta base. This method requi
 If the item does not exist, an error will be returned.
 
 ```swift
-struct SomeModel: ItemModel {
+struct SomeModel: Fetchable {
     let key: String?
     let title: String
 }
@@ -92,7 +92,7 @@ For more information, please see the documentation for [Put Item](https://docs.d
 The ``insert`` method inserts a single item into the Deta Base. If an item with the same key already exists, an error will be returned.
 
 ```swift
-struct SomeModel: ItemModel {
+struct SomeModel: Fetchable {
     let key: String?
     let title: String
 }
@@ -153,7 +153,7 @@ For more information, please see the documentation for [Put Item](https://docs.d
 The ``fetch`` method retrieves items that matches the specified query. A query is a list of dictionaries with a string key and AnyEncodable values. For more information on how to build a query, please consult the (Deta docs)[https://docs.deta.sh/docs/base/sdk/#queries].
 
 ```swift
-struct SomeModel: ItemModel {
+struct SomeModel: Fetchable {
     let key: String?
     let title: String
     let timestamp: Int
