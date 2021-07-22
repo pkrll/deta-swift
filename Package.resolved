@@ -5,9 +5,9 @@
         "package": "Network",
         "repositoryURL": "git@github.com:pkrll/Network.git",
         "state": {
-          "branch": "main",
-          "revision": "afac55da5dddcf156ef84d07f0ba93b3ecbd8ac4",
-          "version": null
+          "branch": null,
+          "revision": "076b039947b02d3aff4899ca0640acc33fefdd65",
+          "version": "1.1.0"
         }
       }
     ]

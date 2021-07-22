@@ -10,7 +10,7 @@ public final class Deta {
     
     private var standardOperation: Operator {
         let operation = builder
-            .append(.session(.shared))
+            .append(.transport(URLSession.shared))
             .append(.environment(environment))
             .build()
         
