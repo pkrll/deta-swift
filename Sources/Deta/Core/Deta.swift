@@ -6,7 +6,8 @@ public final class Deta {
     private let projectKey: String
     private let base: String
     private let environment: Environment
-    @Injected(\.operationBuilder) private var builder: OperationBuilding
+    
+    @Injected(\.operationBuilder) private var builder: OperationBuilder
     
     private var standardOperation: Operator {
         let operation = builder
