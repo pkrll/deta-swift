@@ -6,7 +6,7 @@ public final class Deta {
     private let projectKey: String
     private let base: String
     private let environment: Environment
-    private let builder: OperationBuilder
+    @Injected(\.operationBuilder) private var builder: OperationBuilding
     
     private var standardOperation: Operator {
         let operation = builder
@@ -22,7 +22,6 @@ public final class Deta {
         self.base = base
         
         environment = .init(projectKey: projectKey, base: base)
-        builder = OperationBuilder()
     }
     /// Deletes an item from the database that matches the key provided.
     ///
