@@ -7,10 +7,10 @@ let package = Package(
     name: "Deta",
     products: [.library(name: "Deta", targets: ["Deta"])],
     dependencies: [
-        .package(url: "https://github.com/pkrll/Network", from: "0.1.0")
+        .package(name: "NetworkStack", url: "https://github.com/pkrll/Network", from: "0.1.0")
     ],
     targets: [
-        .target(name: "Deta", dependencies: ["Network"]),
+        .target(name: "Deta", dependencies: ["NetworkStack"]),
         .testTarget(name: "DetaTests", dependencies: ["Deta"]),
     ]
 )

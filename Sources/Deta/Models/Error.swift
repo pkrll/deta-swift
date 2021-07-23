@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import Network
+import NetworkStack
 
 public struct Error: Swift.Error {
 
