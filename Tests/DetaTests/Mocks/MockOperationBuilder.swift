@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import Network
+import NetworkStack
 
 final class MockOperationBuilder: OperationBuilder {
     override func append(_ operation: Operation) -> Self {

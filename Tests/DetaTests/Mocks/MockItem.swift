@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import Network
+import NetworkStack
 import Deta
 
 struct MockItem: Fetchable, Equatable {

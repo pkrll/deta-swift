@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import Network
+import NetworkStack
 @testable import Deta
 
 final class MockOperator: Operator {

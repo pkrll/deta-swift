@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import Network
+import NetworkStack
 
 extension Deta {
     func parse<T: Decodable>(_ response: Response, as type: T.Type) throws -> T {

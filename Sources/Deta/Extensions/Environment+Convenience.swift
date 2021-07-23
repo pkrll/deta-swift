@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import Network
+import NetworkStack
 
 extension Environment {
     init(projectKey: String, base: String) {

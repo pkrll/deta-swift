@@ -1,5 +1,5 @@
 import Foundation
-import Network
+import NetworkStack
 
 public final class Deta {
     

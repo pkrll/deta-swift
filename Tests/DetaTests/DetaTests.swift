@@ -1,5 +1,5 @@
 import XCTest
-import Network
+import NetworkStack
 @testable import Deta
 
 final class DetaTests: XCTestCase {
