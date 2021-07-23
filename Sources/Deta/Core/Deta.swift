@@ -31,16 +31,17 @@ public final class Deta {
         let request = Request.delete("items/\(key)")
         
         standardOperation.send(request) { result in
-            let response: Result<Void, Error>
+            let returnValue: Result<Void, Error>
             
             switch result {
-            case .failure(let error):
-                response = .failure(error)
+            case .failure(let response):
+                let error = Error(from: response)
+                returnValue = .failure(error)
             case .success:
-                response = .success(())
+                returnValue = .success(())
             }
             
-            completion(response)
+            completion(returnValue)
         }
     }
     /// List items that match a query.
@@ -62,16 +63,18 @@ public final class Deta {
             
             do {
                 switch result {
-                case .failure(let error):
+                case .failure(let response):
+                    let error = Error(from: response)
                     returnValue = .failure(error)
                 case .success(let response) where response.status == .badRequest:
-                    let result = self.parseError(from: response)
-                    returnValue = .failure(result)
+                    let error = Error(from: response)
+                    returnValue = .failure(error)
                 case .success(let response):
                     let result = try self.parse(response, as: Fetch.Response<T>.self)
                     returnValue = .success(result)
                 }
             } catch {
+                let error = Error(code: .unknown, underlyingError: error)
                 returnValue = .failure(error)
             }
             
@@ -91,19 +94,18 @@ public final class Deta {
             
             do {
                 switch result {
-                case .failure(let error):
+                case .failure(let response):
+                    let error = Error(from: response)
                     returnValue = .failure(error)
-                case .success(let response) where response.status == .notFound:
-                    let result = try self.parse(response, as: PartialItem.self)
-                    returnValue = .failure(result)
                 case .success(let response) where response.status == .ok:
                     let result = try self.parse(response, as: T.self)
                     returnValue = .success(result)
                 case .success(let response):
-                    let result = self.parseError(from: response)
-                    returnValue = .failure(result)
+                    let error = Error(from: response)
+                    returnValue = .failure(error)
                 }
             } catch {
+                let error = Error(code: .unknown, underlyingError: error)
                 returnValue = .failure(error)
             }
             
@@ -128,17 +130,18 @@ public final class Deta {
             
             do {
                 switch result {
-                case .failure(let error):
+                case .failure(let response):
+                    let error = Error(from: response)
                     returnValue = .failure(error)
-                case .success(let response) where response.status == .conflict,
-                     .success(let response) where response.status == .badRequest:
-                    let result = self.parseError(from: response)
-                    returnValue = .failure(result)
-                case .success(let response):
+                case .success(let response) where response.status == .created:
                     let result = try self.parse(response, as: T.self)
                     returnValue = .success(result)
+                case .success(let response):
+                    let error = Error(from: response)
+                    returnValue = .failure(error)
                 }
             } catch {
+                let error = Error(code: .unknown, underlyingError: error)
                 returnValue = .failure(error)
             }
             
@@ -163,16 +166,18 @@ public final class Deta {
             
             do {
                 switch result {
-                case .failure(let error):
+                case .failure(let response):
+                    let error = Error(from: response)
                     returnValue = .failure(error)
-                case .success(let response) where response.status == .badRequest:
-                    let result = self.parseError(from: response)
-                    returnValue = .failure(result)
-                case .success(let response):
+                case .success(let response) where response.status == .multiStatus:
                     let result = try self.parse(response, as: Put.Response<T>.self)
                     returnValue = .success(result)
+                case .success(let response):
+                    let error = Error(from: response)
+                    returnValue = .failure(error)
                 }
             } catch {
+                let error = Error(code: .unknown, underlyingError: error)
                 returnValue = .failure(error)
             }
             
@@ -192,17 +197,18 @@ public final class Deta {
             
             do {
                 switch result {
-                case .failure(let error):
+                case .failure(let response):
+                    let error = Error(from: response)
                     returnValue = .failure(error)
-                case .success(let response) where response.status == .badRequest,
-                     .success(let response) where response.status == .notFound:
-                    let result = self.parseError(from: response)
-                    returnValue = .failure(result)
-                case .success(let response):
+                case .success(let response) where response.status == .ok:
                     let result = try self.parse(response, as: Update.Response.self)
                     returnValue = .success(result)
+                case .success(let response):
+                    let error = Error(from: response)
+                    returnValue = .failure(error)
                 }
             } catch {
+                let error = Error(code: .unknown, underlyingError: error)
                 returnValue = .failure(error)
             }
             
