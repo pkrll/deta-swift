@@ -4,6 +4,8 @@
 
 Deta-Swift is the unofficial Deta SDK for Swift.
 
+:warning: Still under development.
+
 ## Installation
 
 Simply add ``.package(url: "https://github.com/pkrll/deta-swift.git", from: "1.0.0")`` to your dependencies in ``Package.swift`` .
