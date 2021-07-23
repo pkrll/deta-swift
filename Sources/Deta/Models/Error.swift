@@ -15,20 +15,20 @@ public struct Error: Swift.Error {
     }
     
     public let code: Code
-    public let message: String?
+    public let messages: [String]?
     public let underlyingError: Swift.Error?
     
-    init(code: Code, message: String? = nil, underlyingError: Swift.Error? = nil) {
+    init(code: Code, messages: [String]? = nil, underlyingError: Swift.Error? = nil) {
         self.code = code
-        self.message = message
+        self.messages = messages
         self.underlyingError = underlyingError
     }
 }
 
 extension Error {
-    public static let keyAlreadyExists = Error(code: .keyAlreadyExists, message: nil)
-    public static let keyNotFound = Error(code: .keyNotFound, message: nil)
-    public static let unknown = Error(code: .unknown, message: nil)
+    public static let keyAlreadyExists = Error(code: .keyAlreadyExists)
+    public static let keyNotFound = Error(code: .keyNotFound)
+    public static let unknown = Error(code: .unknown)
 }
 
 extension Error {
@@ -43,13 +43,13 @@ extension Error {
         
         switch response.status {
         case .badRequest:
-            self.init(code: .badRequest, message: model?.errors.first)
+            self.init(code: .badRequest, messages: model?.errors)
         case .conflict:
-            self.init(code: .keyAlreadyExists, message: model?.errors.first)
+            self.init(code: .keyAlreadyExists, messages: model?.errors)
         case .notFound:
-            self.init(code: .keyNotFound, message: model?.errors.first)
+            self.init(code: .keyNotFound, messages: model?.errors)
         default:
-            self.init(code: .unknown, message: model?.errors.first)
+            self.init(code: .unknown, messages: model?.errors)
         }
     }
     

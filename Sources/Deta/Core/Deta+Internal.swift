@@ -8,7 +8,7 @@ import Network
 extension Deta {
     func parse<T: Decodable>(_ response: Response, as type: T.Type) throws -> T {
         guard let data = response.data else {
-            throw Error(code: .unknown, message: "Missing data", underlyingError: nil)
+            throw Error(code: .unknown, messages: ["Missing data"], underlyingError: nil)
         }
 
         do {
