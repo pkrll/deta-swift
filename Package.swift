@@ -7,7 +7,7 @@ let package = Package(
     name: "Deta",
     products: [.library(name: "Deta", targets: ["Deta"])],
     dependencies: [
-        .package(url: "git@github.com:pkrll/Network.git", from: "1.0.0")
+        .package(url: "https://github.com/pkrll/Network", from: "0.1.0")
     ],
     targets: [
         .target(name: "Deta", dependencies: ["Network"]),
