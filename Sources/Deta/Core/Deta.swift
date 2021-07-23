@@ -1,5 +1,8 @@
 import Foundation
 import NetworkStack
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public final class Deta {
     
