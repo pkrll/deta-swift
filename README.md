@@ -1,6 +1,6 @@
 <img alt="logo" src="https://user-images.githubusercontent.com/140205/126669572-809c2700-7fcd-4177-9a9d-88721fddc21e.png">
 
-![Swift 5.4](https://img.shields.io/badge/Swift-5.4-orange) ![SPM Compatible](https://img.shields.io/badge/SPM-Compatible-success)
+[![Swift 5.4](https://img.shields.io/badge/Swift-5.4-orange)](https://swift.org/blog/swift-5-4-released/) [![SPM Compatible](https://img.shields.io/badge/SPM-Compatible-success)](https://swift.org/package-manager/) [![Swift](https://github.com/pkrll/deta-swift/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/pkrll/deta-swift/actions/workflows/swift.yml)
 
 Deta-Swift is the unofficial Deta SDK for Swift.
 
