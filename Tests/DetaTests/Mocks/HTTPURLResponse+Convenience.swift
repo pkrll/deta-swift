@@ -11,10 +11,17 @@ extension HTTPURLResponse {
                         httpVersion: nil,
                         headerFields: nil)
     }
-    
-    static var failure: HTTPURLResponse? {
+
+    static var badRequest: HTTPURLResponse? {
         HTTPURLResponse(url: URL(string: "https://github.com")!,
                         statusCode: 400,
+                        httpVersion: nil,
+                        headerFields: nil)
+    }
+    
+    static var notFound: HTTPURLResponse? {
+        HTTPURLResponse(url: URL(string: "https://github.com")!,
+                        statusCode: 404,
                         httpVersion: nil,
                         headerFields: nil)
     }

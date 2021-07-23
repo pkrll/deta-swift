@@ -96,9 +96,12 @@ public final class Deta {
                 case .success(let response) where response.status == .notFound:
                     let result = try self.parse(response, as: PartialItem.self)
                     returnValue = .failure(result)
-                case .success(let response):
+                case .success(let response) where response.status == .ok:
                     let result = try self.parse(response, as: T.self)
                     returnValue = .success(result)
+                case .success(let response):
+                    let result = self.parseError(from: response)
+                    returnValue = .failure(result)
                 }
             } catch {
                 returnValue = .failure(error)
