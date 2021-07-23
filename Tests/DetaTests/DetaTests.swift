@@ -146,6 +146,26 @@ final class DetaTests: XCTestCase {
         wait(for: [expectation], timeout: 10)
     }
     
+    func testPutWithFailure() {
+        let expectation = XCTestExpectation(description: "Put")
+        let item = MockItem(key: "SomeKey", title: "Some Title", subtitle: "Some subtitle")
+        
+        setResponse(.badRequest, data: item.convert(), error: nil)
+
+        deta.put(items: [item]) { result in
+            switch result {
+            case .failure(let error):
+                XCTAssertEqual(error.code, .badRequest)
+            case .success:
+                XCTFail("Expected failure.")
+            }
+            
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 10)
+    }
+
     override func setUp() {
         InjectedValue[\.operationBuilder] = MockOperationBuilder()
         deta = Deta(projectKey: "123_123", base: "test")
