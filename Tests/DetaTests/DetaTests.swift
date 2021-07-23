@@ -17,7 +17,7 @@ final class DetaTests: XCTestCase {
         deta.delete(key: "SomeKey") { result in
             switch result {
             case .failure(let error):
-                XCTFail("Expected success. Got error: \(error.localizedDescription)")
+                XCTFail("Expected success. Got error: \(error.code)")
             default:
                 break
             }
@@ -62,7 +62,7 @@ final class DetaTests: XCTestCase {
         deta.get(key: "Somekey", for: MockItem.self) { result in
             switch result {
             case .failure(let error):
-                XCTFail("Expected MockItem. Got error: \(error.localizedDescription)")
+                XCTFail("Expected MockItem. Got error: \(error.code)")
             case .success(let response):
                 XCTAssertEqual(expectedItem, response)
             }
@@ -76,7 +76,6 @@ final class DetaTests: XCTestCase {
     func testGetWithKeyNotFound() {
         let expectation = XCTestExpectation(description: "Delete")
         let item = MockItem(key: "SomeKey", title: "SomeTitle", subtitle: nil)
-        let expectedItem = PartialItem(key: "SomeKey")
         
         InjectedValue[\.httpResult] = HttpResult(request: Request(.get),
                                                  data: item.convert(),
@@ -85,14 +84,10 @@ final class DetaTests: XCTestCase {
         
         deta.get(key: "hello", for: MockItem.self) { result in
             switch result {
-            case .failure(let receivedItem):
-                guard let receivedItem = receivedItem as? PartialItem else {
-                    fallthrough
-                }
-                
-                XCTAssertEqual(receivedItem.key, expectedItem.key)
+            case .failure(let error):
+                XCTAssertEqual(error.code, .keyNotFound)
             default:
-                XCTFail("Expected DetaError.")
+                XCTFail("Expected Error.")
             }
             
             expectation.fulfill()
@@ -107,7 +102,7 @@ final class DetaTests: XCTestCase {
         
         InjectedValue[\.httpResult] = HttpResult(request: Request(.get),
                                                  data: item.convert(),
-                                                 response: HTTPURLResponse.success,
+                                                 response: HTTPURLResponse.created,
                                                  error: nil)
 
         deta.insert(item) { result in

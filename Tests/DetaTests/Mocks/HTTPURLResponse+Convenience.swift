@@ -11,6 +11,13 @@ extension HTTPURLResponse {
                         httpVersion: nil,
                         headerFields: nil)
     }
+    
+    static var created: HTTPURLResponse? {
+        HTTPURLResponse(url: URL(string: "https://github.com")!,
+                        statusCode: 201,
+                        httpVersion: nil,
+                        headerFields: nil)
+    }
 
     static var badRequest: HTTPURLResponse? {
         HTTPURLResponse(url: URL(string: "https://github.com")!,
