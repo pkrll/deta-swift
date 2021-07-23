@@ -17,3 +17,9 @@ extension MockItem {
         try? JSONBody(self).encode()
     }
 }
+
+extension MockItem {
+    static func items(from keys: [String]) -> [Self] {
+        keys.map { MockItem(key: $0, title: $0, subtitle: nil) }
+    }
+}
