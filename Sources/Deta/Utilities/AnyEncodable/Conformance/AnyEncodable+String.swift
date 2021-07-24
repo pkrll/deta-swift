@@ -4,7 +4,7 @@
 
 import Foundation
 
-extension AnyEncodable: ExpressibleByStringLiteral {
+extension AnyEncodable: ExpressibleByStringLiteral, ExpressibleByStringInterpolation {
     public init(stringLiteral value: String) {
         self.init(value)
     }
