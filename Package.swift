@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Deta",
+    name: "deta-swift",
     products: [.library(name: "Deta", targets: ["Deta"])],
     dependencies: [
         .package(name: "NetworkStack", url: "https://github.com/pkrll/Network", from: "0.1.0")
