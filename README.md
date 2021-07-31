@@ -1,14 +1,40 @@
 <img alt="logo" src="https://user-images.githubusercontent.com/140205/126669572-809c2700-7fcd-4177-9a9d-88721fddc21e.png">
 
-[![Swift 5.4](https://img.shields.io/badge/Swift-5.4-orange)](https://swift.org/blog/swift-5-4-released/) [![SPM Compatible](https://img.shields.io/badge/SPM-Compatible-success)](https://swift.org/package-manager/) [![Swift](https://github.com/pkrll/deta-swift/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/pkrll/deta-swift/actions/workflows/swift.yml)
+[![Swift 5.4](https://img.shields.io/badge/Swift-5.4-orange)](https://swift.org/blog/swift-5-4-released/) [![SPM Compatible](https://img.shields.io/badge/SPM-Compatible-success)](https://swift.org/package-manager/) [![Swift](https://github.com/pkrll/deta-swift/actions/workflows/swift.yml/badge.svg)](https://github.com/pkrll/deta-swift/actions/workflows/swift.yml)
 
 Deta-Swift is the unofficial Deta SDK for Swift.
 
-:warning: Still under development.
+:warning: This package is still under active development and things might and will change. Do not use this package as-is in a production app. :warning:
 
 ## Installation
 
-Simply add ``.package(url: "https://github.com/pkrll/deta-swift.git", from: "0.1.0")`` to your dependencies in ``Package.swift`` .
+To use ``Deta-Swift`` in your project, add the following line to your ``Package.swift`` file:
+
+```swift
+.package(url: "https://github.com/pkrll/deta-swift.git", from: "0.1.0")
+```
+
+Add the dependency to the targets that will use ``Deta-Swift``:
+
+```swift
+let package = Package(
+    // ...
+    dependencies: [
+        .package(url: "https://github.com/pkrll/deta-swift.git", from: "0.1.0")
+        // Other dependencies...
+    ],
+    targets: [
+        .target(
+            name: "<SomeApp>",
+            dependencies: [
+                .product(name: "Deta", package: "deta-swift")
+                // Other dependencies...
+            ]
+        ),
+        // Other targets...
+    ]
+)
+```
 
 ## Usage
 
