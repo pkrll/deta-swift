@@ -29,7 +29,8 @@ public final class Deta {
     }
     /// Deletes an item from the database that matches the key provided.
     ///
-    /// - Parameter key: The key of which item to be deleted.
+    /// - Parameter key:        The key of which item to be deleted.
+    /// - Parameter completion: Called upon completion. The completion handler will be executed on the main thread.
     public func delete(key: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let request = Request.delete("items/\(key)")
         
@@ -49,8 +50,9 @@ public final class Deta {
     }
     /// List items that match a query.
     ///
-    /// - Parameter model: The type of the expected model to fetch.
-    /// - Parameter query: A query.
+    /// - Parameter model:      The type of the expected model to fetch.
+    /// - Parameter query:      A query to base the fetch on. See `Fetch.Request` for more information.
+    /// - Parameter completion: Called upon completion. The completion handler will be executed on the main thread.
     public func fetch<T: Fetchable>(model: T.Type,
                                     query: Fetch.Request? = nil,
                                     _ completion: @escaping (Result<Fetch.Response<T>, Error>) -> Void) {
@@ -81,13 +83,16 @@ public final class Deta {
                 returnValue = .failure(error)
             }
             
-            completion(returnValue)
+            DispatchQueue.main.async {
+                completion(returnValue)
+            }
         }
     }
     /// Retrieves an item from the database that matches the key provided.
     ///
     /// - Parameter key:        The key of which item to be retrieved.
-    /// - Parameter completion: If the item does not exists, the completion handler will return an error.
+    /// - Parameter completion: If the item does not exists, the completion handler will return an error. The completion
+    ///                         handler will be executed on the main thread.
     public func get<T: Fetchable>(key: String, for item: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
         let request = Request.get("items/\(key)")
         
@@ -112,7 +117,9 @@ public final class Deta {
                 returnValue = .failure(error)
             }
             
-            completion(returnValue)
+            DispatchQueue.main.async {
+                completion(returnValue)
+            }
         }
     }
     /// Inserts a single item into a Base. Unlike ``put``, this method will return an error if
@@ -122,7 +129,8 @@ public final class Deta {
     ///                         Deta will automaticallt generate a 12 character long string as key which will be
     ///                         be assigned to the item returned.
     /// - Parameter completion: Called upon completion. If successful, the completion handler will return the newly
-    ///                         created item. Otherwise, an error is returned.
+    ///                         created item. Otherwise, an error is returned. The completion handler will be executed
+    ///                         on the main thread.
     public func insert<T: Fetchable>(_ value: T, completion: @escaping (Result<T, Error>) -> Void) {
         var request = Request.post("items")
         request.body = JSONBody(Insert.Request(item: value))
@@ -148,17 +156,21 @@ public final class Deta {
                 returnValue = .failure(error)
             }
             
-            completion(returnValue)
+            DispatchQueue.main.async {
+                completion(returnValue)
+            }
         }
     }
     /// Store an item in the Base.
+    ///
     /// - Note: This method can also be used to update an item in the database, if the model contains a valid key.
     ///
     /// - Parameter value:      The model you want to add to the database. If the key property of the model is nil,
     ///                         Deta will automaticallt generate a 12 character long string as key which will be
     ///                         be assigned to the item returned.
     /// - Parameter completion: Called upon completion. If successful, the completion handler will return the newly
-    ///                         created item. Otherwise, an error is returned.
+    ///                         created item. Otherwise, an error is returned. The completion handler will be executed
+    ///                         on the main thread.
     public func put<T: Fetchable>(items: [T], _ completion: @escaping (Result<Put.Response<T>, Error>) -> Void) {
         var request = Request.put("items")
         request.body = JSONBody(Put.Request(items: items))
@@ -184,10 +196,18 @@ public final class Deta {
                 returnValue = .failure(error)
             }
             
-            completion(returnValue)
+            DispatchQueue.main.async {
+                completion(returnValue)
+            }
         }
     }
-    
+    /// Updates an item with the given key. If the key does not exist, an error is returned.
+    ///
+    /// - Parameter key:        The key of the item.
+    /// - Parameter payload:    The update request. See `Update.Request` for more information.
+    /// - Parameter completion: Called upon completion. If successful, the completion handler will return the newly
+    ///                         created item. Otherwise, an error is returned. The completion handler will be executed
+    ///                         on the main thread.
     public func update(key: String,
                        payload: Update.Request,
                        _ completion: @escaping (Result<Update.Response, Error>) -> Void) {
@@ -215,7 +235,9 @@ public final class Deta {
                 returnValue = .failure(error)
             }
             
-            completion(returnValue)
+            DispatchQueue.main.async {
+                completion(returnValue)
+            }
         }
     }
 }
