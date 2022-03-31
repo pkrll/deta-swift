@@ -23,31 +23,13 @@ public final class Deta {
 
     public func delete(key: String) async throws {
         let request = try URLRequest(for: .delete(key: key), using: configuration)
-        let (_, response) = try await session.data(for: request)
-        
-        guard let response = response as? HTTPURLResponse else {
-            throw Error.unexpectedResponse
-        }
-        
-        let status = HttpStatus(response.statusCode)
-        if !status.isSuccess {
-            throw Error(from: status)
-        }
+        let _ = try await execute(request: request)
     }
     
     public func get<T: DetaModel>(model: T.Type, key: String) async throws -> T {
         let request = try URLRequest(for: .get(key: key), using: configuration)
-        let (data, response) = try await session.data(for: request)
         
-        guard let response = response as? HTTPURLResponse else {
-            throw Error.unexpectedResponse
-        }
-        
-        let status = HttpStatus(response.statusCode)
-        guard status.isSuccess else {
-            throw Error(from: status)
-        }
-        
+        let data = try await execute(request: request)
         let decoder = JSONDecoder()
         let value = try decoder.decode(T.self, from: data)
         
@@ -60,17 +42,7 @@ public final class Deta {
         var request = try URLRequest(for: .insert, using: configuration)
         request.httpBody = try encoder.encode(payload)
         
-        let (data, response) = try await session.data(for: request)
-        
-        guard let response = response as? HTTPURLResponse else {
-            throw Error.unexpectedResponse
-        }
-        
-        let status = HttpStatus(response.statusCode)
-        guard status.isSuccess else {
-            throw Error(from: status)
-        }
-        
+        let data = try await execute(request: request)
         let decoder = JSONDecoder()
         let value = try decoder.decode(T.self, from: data)
         
@@ -83,17 +55,7 @@ public final class Deta {
         var request = try URLRequest(for: .put, using: configuration)
         request.httpBody = try encoder.encode(payload)
         
-        let (data, response) = try await session.data(for: request)
-        
-        guard let response = response as? HTTPURLResponse else {
-            throw Error.unexpectedResponse
-        }
-        
-        let status = HttpStatus(response.statusCode)
-        guard status.isSuccess else {
-            throw Error(from: status)
-        }
-        
+        let data = try await execute(request: request)
         let decoder = JSONDecoder()
         let value = try decoder.decode(Put.Response<T>.self, from: data)
         
@@ -107,6 +69,15 @@ public final class Deta {
         var request = try URLRequest(for: .query, using: configuration)
         request.httpBody = try encoder.encode(payload)
         
+        let data = try await execute(request: request)
+        let decoder = JSONDecoder()
+        let value = try decoder.decode(Fetch.Response<T>.self, from: data)
+        
+        return value
+    }
+
+    @discardableResult
+    private func execute(request: URLRequest) async throws -> Data {
         let (data, response) = try await session.data(for: request)
         
         guard let response = response as? HTTPURLResponse else {
@@ -118,9 +89,6 @@ public final class Deta {
             throw Error(from: status)
         }
         
-        let decoder = JSONDecoder()
-        let value = try decoder.decode(Fetch.Response<T>.self, from: data)
-        
-        return value
+        return data
     }
 }
