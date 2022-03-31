@@ -119,7 +119,7 @@ For more information, please see the documentation for [Insert Item](https://doc
 
 ### Fetch Item
 
-The ``fetch`` method retrieves items that matches some predicate. The predicate is a collection of `Query` objects. For more information on queries, please consult the (Deta docs)[https://docs.deta.sh/docs/base/sdk/#queries].
+The ``fetch`` method retrieves items that matches some predicate. The predicate is a collection of `Query` objects. For more information on queries, please consult the [Deta docs](https://docs.deta.sh/docs/base/sdk/#queries).
 
 ``Deta-Swift`` has support for the following operators:
 
