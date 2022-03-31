@@ -5,7 +5,10 @@ import PackageDescription
 
 let package = Package(
     name: "Deta",
-    platforms: [.macOS(.v10_15)],
+    platforms: [
+        .macOS(.v10_15),
+        .iOS(.v13)
+    ],
     products: [.library(name: "Deta", targets: ["Deta"])],
     dependencies: [],
     targets: [
