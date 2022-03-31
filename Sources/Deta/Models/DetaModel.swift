@@ -4,6 +4,6 @@
 
 import Foundation
 
-public protocol DetaModel {
-    var key: String { get }
+public protocol DetaModel: Codable {
+    var key: String? { get }
 }

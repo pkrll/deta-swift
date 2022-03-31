@@ -33,8 +33,27 @@ public final class Deta {
         fatalError("Not implemented")
     }
     
-    public func put<T: DetaModel>(items: [T]) async throws {
-        fatalError("Not implemented.")
+    public func put<T: DetaModel>(items: [T]) async throws -> Put.Response<T> {
+        let payload = Put.Request(items: items)
+        let encoder = JSONEncoder()
+        var request = try URLRequest(for: .put, using: configuration)
+        request.httpBody = try encoder.encode(payload)
+        
+        let (data, response) = try await session.data(for: request)
+        
+        guard let response = response as? HTTPURLResponse else {
+            throw Error.unexpectedResponse
+        }
+        
+        let status = HttpStatus(response.statusCode)
+        guard status.isSuccess else {
+            throw Error(from: status)
+        }
+        
+        let decoder = JSONDecoder()
+        let value = try decoder.decode(Put.Response<T>.self, from: data)
+        
+        return value
     }
     
     public func update<T: DetaModel>(item: T) async throws {
