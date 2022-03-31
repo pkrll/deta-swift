@@ -55,7 +55,26 @@ public final class Deta {
     }
     
     public func insert<T: DetaModel>(item: T) async throws -> T {
-        fatalError("Not implemented")
+        let payload = Insert.Request(item: item)
+        let encoder = JSONEncoder()
+        var request = try URLRequest(for: .insert, using: configuration)
+        request.httpBody = try encoder.encode(payload)
+        
+        let (data, response) = try await session.data(for: request)
+        
+        guard let response = response as? HTTPURLResponse else {
+            throw Error.unexpectedResponse
+        }
+        
+        let status = HttpStatus(response.statusCode)
+        guard status.isSuccess else {
+            throw Error(from: status)
+        }
+        
+        let decoder = JSONDecoder()
+        let value = try decoder.decode(T.self, from: data)
+        
+        return value
     }
     
     public func put<T: DetaModel>(items: [T]) async throws -> Put.Response<T> {
