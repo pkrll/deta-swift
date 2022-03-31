@@ -22,7 +22,17 @@ public final class Deta {
     }
 
     public func delete(key: String) async throws {
-        fatalError("Not implemented.")
+        let request = try URLRequest(for: .delete(key: key), using: configuration)
+        let (_, response) = try await session.data(for: request)
+        
+        guard let response = response as? HTTPURLResponse else {
+            throw Error.unexpectedResponse
+        }
+        
+        let status = HttpStatus(response.statusCode)
+        if !status.isSuccess {
+            throw Error(from: status)
+        }
     }
     
     public func get<T: DetaModel>(key: String) async throws -> T {
