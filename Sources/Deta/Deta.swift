@@ -35,7 +35,7 @@ public final class Deta {
         }
     }
     
-    public func get<T: DetaModel>(key: String) async throws -> T {
+    public func get<T: DetaModel>(model: T.Type, key: String) async throws -> T {
         let request = try URLRequest(for: .get(key: key), using: configuration)
         let (data, response) = try await session.data(for: request)
         
@@ -100,11 +100,27 @@ public final class Deta {
         return value
     }
     
-    public func update<T: DetaModel>(item: T) async throws {
-        fatalError("Not implemented")
-    }
-    
-    public func query<T: DetaModel>() async throws -> [T] {
-        fatalError("Not implemented")
+    public func fetch<T: DetaModel>(model: T.Type, @GroupingQueryBuilder _ query: () -> [GroupedQueries]) async throws -> Fetch.Response<T> {
+        let queries = query().map(\.queries)
+        let payload = Fetch.Request(query: queries, limit: nil, last: nil)
+        let encoder = JSONEncoder()
+        var request = try URLRequest(for: .query, using: configuration)
+        request.httpBody = try encoder.encode(payload)
+        
+        let (data, response) = try await session.data(for: request)
+        
+        guard let response = response as? HTTPURLResponse else {
+            throw Error.unexpectedResponse
+        }
+        
+        let status = HttpStatus(response.statusCode)
+        guard status.isSuccess else {
+            throw Error(from: status)
+        }
+        
+        let decoder = JSONDecoder()
+        let value = try decoder.decode(Fetch.Response<T>.self, from: data)
+        
+        return value
     }
 }

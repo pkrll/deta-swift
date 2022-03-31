@@ -5,7 +5,7 @@
 import Foundation
 
 struct Insert {
-    struct Request<Item: Encodable>: Encodable {
+    struct Request<Item: DetaModel>: Encodable {
         let item: Item
     }
 }

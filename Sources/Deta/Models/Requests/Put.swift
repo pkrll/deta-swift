@@ -6,11 +6,11 @@ import Foundation
 
 public struct Put {
     
-    struct Request<Item: Encodable>: Encodable {
+    struct Request<Item: DetaModel>: Encodable {
         let items: [Item]
     }
     /// The response of the `put(items:_)` method.
-    public struct Response<Item: Decodable>: Decodable {
+    public struct Response<Item: DetaModel>: Decodable {
         public struct Processed: Decodable {
             public let items: [Item]
         }
