@@ -13,8 +13,6 @@ jobs:
     steps:
     - name: Setup Swift
       uses: fwal/setup-swift@v1.7.0
-      with:
-        swift-version: "5.5"
     - uses: actions/checkout@v2
     - name: Build
       run: swift build -v
