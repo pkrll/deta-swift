@@ -12,6 +12,7 @@ let package = Package(
     products: [.library(name: "Deta", targets: ["Deta"])],
     dependencies: [],
     targets: [
-        .target(name: "Deta")
+        .target(name: "Deta"),
+        .testTarget(name: "DetaTests", dependencies: ["Deta"])
     ]
 )

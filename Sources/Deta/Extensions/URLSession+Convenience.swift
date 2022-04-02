@@ -7,6 +7,8 @@ import Foundation
 import FoundationNetworking
 #endif
 
+extension URLSession: Transporting {}
+
 @available(iOS, deprecated: 15.0, message: "Use the built-in API instead")
 extension URLSession {
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {

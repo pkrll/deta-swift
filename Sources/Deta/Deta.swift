@@ -10,15 +10,15 @@ import FoundationNetworking
 public final class Deta {    
     
     private let configuration: Configuration
-    private let session: URLSession
+    private let transport: Transporting
     
     public convenience init(with configuration: Configuration) {
-        self.init(configuration: configuration, session: .shared)
+        self.init(configuration: configuration, transport: URLSession.shared)
     }
     
-    init(configuration: Configuration, session: URLSession) {
+    init(configuration: Configuration, transport: Transporting) {
         self.configuration = configuration
-        self.session = session
+        self.transport = transport
     }
 
     public func delete(key: String) async throws {
@@ -78,7 +78,7 @@ public final class Deta {
 
     @discardableResult
     private func execute(request: URLRequest) async throws -> Data {
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await transport.data(for: request)
         
         guard let response = response as? HTTPURLResponse else {
             throw Error.unexpectedResponse
