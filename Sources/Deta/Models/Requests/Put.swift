@@ -24,3 +24,8 @@ public struct Put {
         public let failed: Failed?
     }
 }
+
+// Internal conformance of Encodable for testing purposes
+extension Put.Response: Encodable {}
+extension Put.Response.Processed: Encodable {}
+extension Put.Response.Failed: Encodable {}
