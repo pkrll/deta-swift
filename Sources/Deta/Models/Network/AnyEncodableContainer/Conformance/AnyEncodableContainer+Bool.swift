@@ -4,7 +4,7 @@
 
 import Foundation
 
-extension AnyEncodable: ExpressibleByBooleanLiteral {
+extension AnyEncodableContainer: ExpressibleByBooleanLiteral {
     public init(booleanLiteral value: BooleanLiteralType) {
         self.init(value)
     }

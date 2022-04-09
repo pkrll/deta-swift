@@ -1,6 +1,10 @@
+//
+// Deta
+//
+
 import Foundation
 
-public struct AnyDecodable: Decodable {
+public struct AnyEncodableContainer: Encodable {
     public let value: Any
     
     public init<T>(_ value: T?) {

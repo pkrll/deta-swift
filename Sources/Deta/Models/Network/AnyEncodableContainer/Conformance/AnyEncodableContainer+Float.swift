@@ -4,7 +4,7 @@
 
 import Foundation
 
-extension AnyEncodable: ExpressibleByFloatLiteral {
+extension AnyEncodableContainer: ExpressibleByFloatLiteral {
     public init(floatLiteral value: Double) {
         self.init(value)
     }

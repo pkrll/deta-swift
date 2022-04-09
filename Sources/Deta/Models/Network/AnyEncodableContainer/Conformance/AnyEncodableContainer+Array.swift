@@ -4,7 +4,7 @@
 
 import Foundation
 
-extension AnyEncodable: ExpressibleByArrayLiteral {
+extension AnyEncodableContainer: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: Any...) {
         self.init(elements)
     }

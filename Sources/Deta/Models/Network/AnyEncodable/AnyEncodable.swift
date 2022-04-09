@@ -4,10 +4,10 @@
 
 import Foundation
 
-public struct AnyEncodable: Encodable {
-    public let value: Any
-    
-    public init<T>(_ value: T?) {
-        self.value = value ?? ()
-    }
-}
+public protocol AnyEncodable: Encodable {}
+
+extension Int: AnyEncodable {}
+extension Double: AnyEncodable {}
+extension String: AnyEncodable {}
+extension Array: AnyEncodable where Element: AnyEncodable {}
+extension Dictionary: AnyEncodable where Key == String, Value: AnyEncodable {}

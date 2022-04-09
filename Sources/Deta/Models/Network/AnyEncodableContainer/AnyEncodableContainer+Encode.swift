@@ -4,7 +4,7 @@
 
 import Foundation
 
-extension AnyEncodable {
+extension AnyEncodableContainer {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         
@@ -40,9 +40,9 @@ extension AnyEncodable {
         case let value as UInt64:
             try container.encode(value)
         case let value as [Any?]:
-            try container.encode(value.map(AnyEncodable.init))
+            try container.encode(value.map(AnyEncodableContainer.init))
         case let value as [String: Any?]:
-            try container.encode(value.mapValues(AnyEncodable.init))
+            try container.encode(value.mapValues(AnyEncodableContainer.init))
         default:
             let context = EncodingError.Context(codingPath: container.codingPath, debugDescription: "Invalid type.")
             throw EncodingError.invalidValue(value, context)
