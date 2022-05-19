@@ -20,7 +20,7 @@ Add the dependency to the targets that will use ``Deta-Swift``:
 let package = Package(
     // ...
     dependencies: [
-        .package(url: "https://github.com/pkrll/deta-swift.git", from: "0.1.0")
+        .package(url: "https://github.com/pkrll/deta-swift.git", from: "1.0.0")
         // Other dependencies...
     ],
     targets: [
