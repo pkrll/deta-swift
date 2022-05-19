@@ -3,19 +3,12 @@
 //
 
 import Foundation
-import NetworkStack
 import Deta
 
-struct MockItem: Fetchable, Equatable {
+struct MockItem: DetaModel, Equatable {
     let key: String?
     let title: String
     let subtitle: String?
-}
-
-extension MockItem {
-    func convert() -> Data? {
-        try? JSONBody(self).encode()
-    }
 }
 
 extension MockItem {

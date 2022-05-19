@@ -11,7 +11,7 @@ Deta-Swift is the unofficial Deta SDK for Swift.
 To use ``Deta-Swift`` in your project, add the following line to your ``Package.swift`` file:
 
 ```swift
-.package(url: "https://github.com/pkrll/deta-swift.git", from: "0.1.0")
+.package(url: "https://github.com/pkrll/deta-swift.git", from: "1.0.0")
 ```
 
 Add the dependency to the targets that will use ``Deta-Swift``:
@@ -54,10 +54,10 @@ The Deta SDK for Swift supports all of Deta's HTTP API endpoints currently avail
 
 ### Put Item
 
-The ``put`` method allows for adding multiple items to the Deta base in a single request. Your models must conform to the ``Fetchable`` protocol.
+The ``put`` method allows for adding multiple items to the Deta base in a single request. Your models must conform to the ``DetaModel`` protocol.
 
 ```swift
-struct SomeModel: Fetchable {
+struct SomeModel: DetaModel {
     let key: String?
     let title: String
 }
@@ -67,15 +67,9 @@ let items = [
     SomeModel(key: "2", title: "Second item")
 ]
 
-deta.put(items: items) { result
-    switch result {
-    case .failure(let error):
-        print(error)
-    case .success(let response):
-        // response.processed contains all items that were successfully added.
-        // response.failed contains any item that failed due to internal processing.
-    }
-}
+let response = try await deta.put(items: items)
+// response.processed contains all items that were successfully added.
+// response.failed contains any item that failed due to internal processing.
 ```
 
 For more information, please see the documentation for [Put Item](https://docs.deta.sh/docs/base/http/#put-item) on Deta Docs.
@@ -87,19 +81,12 @@ The ``get`` method retrieves a single item from the Deta base. This method requi
 If the item does not exist, an error will be returned.
 
 ```swift
-struct SomeModel: Fetchable {
+struct SomeModel: DetaModel {
     let key: String?
     let title: String
 }
 
-deta.get(key: "1", for: SomeModel.self) { result
-    switch result {
-    case .failure(let error):
-        print(error)
-    case .success(let response):
-        // The response, as a SomeModel
-    }
-}
+let model = try await deta.get(model: SomeModel.self, key: "1")
 ```
 
 For more information, please see the documentation for [Get Item](https://docs.deta.sh/docs/base/http/#get-item) on Deta Docs.
@@ -109,14 +96,7 @@ For more information, please see the documentation for [Get Item](https://docs.d
 The ``delete`` method deletes an item from the Deta base. Regardless of whether the item exists or not, a successful response will be returned.
 
 ```swift
-deta.delete(key: "1") { result
-    switch result {
-    case .failure(let error):
-        print(error)
-    case .success:
-        // The item was or was not deleted 🤷🏻‍♂️
-    }
-}
+try await deta.delete(key: "1")
 ```
 
 For more information, please see the documentation for [Delete Item](https://docs.deta.sh/docs/base/http/#delete-item) on Deta Docs.
@@ -131,81 +111,96 @@ struct SomeModel: Fetchable {
     let title: String
 }
 
-let item = SomeModel(key: "1", title: "First item")
-
-deta.insert(item) { result
-    switch result {
-    case .failure(let error):
-        print(error)
-    case .success(let response):
-        // The item inserted, as SomeModel
-    }
-}
+let itemToInsert = SomeModel(key: "1", title: "First item")
+let insertedItem = try await deta.insert(itemToInsert)
 ```
 
 For more information, please see the documentation for [Insert Item](https://docs.deta.sh/docs/base/http/#insert-item) on Deta Docs.
 
-### Update Item
+### Fetch Item
 
-The ``update`` method updates an item based on a specified set of rules. If the key does not exist, an error is returned.
+The ``fetch`` method retrieves items that matches some predicate. The predicate is a collection of `Query` objects. For more information on queries, please consult the [Deta docs](https://docs.deta.sh/docs/base/sdk/#queries).
+
+``Deta-Swift`` has support for the following operators:
+
+**Equals**:
 
 ```swift
-let request = Update.Request(
-    set: [
-        "title": "Hello World!",
-        "link": "deta.sh"
-    ],
-    increment: ["numberOfReleases": 1]
-)
+Query(_: String, equals: AnyEncodable)
+```
 
-deta.update(key: "1", payload: request) { result in
-    switch result {
-    case .failure(let error):
-        print(error)
-    case .success(let response):
-        // The response will be identical to the Update.Request payload
-    }
+**Less Than**
+
+```swift
+Query(_: String, isLessThan: AnyEncodable)
+Query(_: String, isLessThanOrEqualsTo: AnyEncodable)
+```
+
+**Greater than**
+
+```swift
+Query(_: String, isGreaterThan: AnyEncodable)
+Query(_: String, isGreaterThanOrEqualsTo: AnyEncodable)
+```
+
+**Prefix**
+
+```swift
+Query(_: String, hasPrefix: AnyEncodable)
+```
+
+**Range**
+
+```swift
+Query(_: String, isBetween: ClosedRange<Int>)
+Query(_: String, isBetween: ClosedRange<Double>)
+```
+
+**Contains**
+
+```swift
+Query(_: String, contains: AnyEncodable)
+Query(_: String, doesNotContain: AnyEncodable)
+```
+
+`Query` objects can be grouped using `GroupedQueries`:
+
+```swift
+GroupedQueries {
+    Query("someField", contains: "Some value")
+    Query("someOtherField", isGreaterThan: 13)
 }
 ```
 
-The ``Update.Request`` payload may have the following fields:
-
-```swift
-Update.Request(
-    set: ["fieldName": Any], // The attributes to be updated or created.
-    increment: ["fieldName": Int], // The attributes to be incremented. Increment value can be negative.
-    append: ["fieldName": [Any]], // The attributes to append a value to. Appended value must be a list.
-    prepend: ["fieldName": [Any]], // The attributes to prepend a value to. Prepended value must be a list.
-    delete: [String] // The attributes to be deleted.
-)
-```
-
-For more information, please see the documentation for [Update Item](https://docs.deta.sh/docs/base/http/#update-item) on Deta Docs.
-
-### Fetch Item
-
-The ``fetch`` method retrieves items that matches the specified query. A query is a list of dictionaries with a string key and AnyEncodable values. For more information on how to build a query, please consult the (Deta docs)[https://docs.deta.sh/docs/base/sdk/#queries].
+Grouping queries are equivalent to ``OR``, while multiple groups of queries will be `AND`ed.
 
 ```swift
 struct SomeModel: Fetchable {
     let key: String?
     let title: String
-    let timestamp: Int
+    let year: Int
 }
 
-let query: [[String: AnyEncodable]] = [
-    ["title": "Deta", "timestamp?gt": 1620770000]
-]
-
-let request = Fetch.Request(query: query)
-
-deta.fetch(model: SomeModel.self, query: request) { result in
-    switch result {
-    case .failure(let error):
-        print(error)
-    case .success(let response):
-        // List of item fetched, as SomeModel
+// Fetch items that satisfies the following:
+// - Title contains "some value" AND year equals to 1988, OR:
+// - Year ranges between 2000 and 2010
+let response1 = try await deta.fetch(model: SomeModel.self) {
+    GroupedQueries {
+        Query("title", contains: "Some value")
+        Query("year", equals: "1988")
     }
+    
+    GroupedQueries {
+        Query("year", isBetween: 2000...2010)
+    }
+}
+
+// Fetch items that satisfies the following:
+// - Title contains "some value" AND
+// - Year is less than 1960
+let response2 = try await deta.fetch(model: SomeModel.self) {
+    Query("title", contains: "Some value")
+    Query("year", isLessThan: 1960)
 }
 ```
 

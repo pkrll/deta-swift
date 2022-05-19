@@ -1,16 +1,18 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
-    name: "deta-swift",
-    products: [.library(name: "Deta", targets: ["Deta"])],
-    dependencies: [
-        .package(name: "NetworkStack", url: "https://github.com/pkrll/Network", from: "0.1.0")
+    name: "Deta",
+    platforms: [
+        .macOS(.v10_15),
+        .iOS(.v13)
     ],
+    products: [.library(name: "Deta", targets: ["Deta"])],
+    dependencies: [],
     targets: [
-        .target(name: "Deta", dependencies: ["NetworkStack"]),
-        .testTarget(name: "DetaTests", dependencies: ["Deta"]),
+        .target(name: "Deta"),
+        .testTarget(name: "DetaTests", dependencies: ["Deta"])
     ]
 )
