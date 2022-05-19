@@ -11,9 +11,9 @@ jobs:
     runs-on: macos-latest
     name: Run tests
     steps:
-    - name: Setup Swift
-      uses: fwal/setup-swift@v1.14.0
     - uses: actions/checkout@v2
+    - name: Setup Swift
+      uses: swift-actions/setup-swift@v1
     - name: Build
       run: swift build -v
     - name: Run tests
