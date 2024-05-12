@@ -62,9 +62,14 @@ public final class Deta {
         return value
     }
     
-    public func fetch<T: DetaModel>(model: T.Type, @GroupingQueryBuilder _ query: () -> [GroupedQueries]) async throws -> Fetch.Response<T> {
+    public func fetch<T: DetaModel>(
+        model: T.Type,
+        limit: Int? = nil,
+        last: String? = nil,
+        @GroupingQueryBuilder _ query: () -> [GroupedQueries]
+    ) async throws -> Fetch.Response<T> {
         let queries = query().map(\.queries)
-        let payload = Fetch.Request(query: queries, limit: nil, last: nil)
+        let payload = Fetch.Request(query: queries, limit: limit, last: last)
         let encoder = JSONEncoder()
         var request = try URLRequest(for: .query, using: configuration)
         request.httpBody = try encoder.encode(payload)
